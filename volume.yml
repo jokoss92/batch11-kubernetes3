@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-volume
+  namespace: payment
+spec:
+  containers:
+  - image: nginx:alpine
+    name: test-volume-nginx
+    volumeMounts:
+    - mountPath: /data
+      name: mounting-volume
+    resources:
+      limits:
+        memory: "64Mi"
+        cpu: "100m"
+      requests:
+        memory: "32Mi"
+        cpu: "50m"
+  - image: aditirvan/load-test:latest
+    name: test-volume-load
+    volumeMounts:
+    - mountPath: /data2
+      name: mounting-volume
+    resources:
+      limits:
+        memory: "64Mi"
+        cpu: "100m"
+      requests:
+        memory: "32Mi"
+        cpu: "50m"
+  volumes:
+  - name: mounting-volume
+    emptyDir:
+      sizeLimit: 500Mi

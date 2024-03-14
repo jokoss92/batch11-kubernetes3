@@ -1,0 +1,49 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: myingress-payment
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  namespace: ingress
+  labels:
+    name: myingress-payment
+spec:
+  rules:
+  - host: k8slearn.jokoss.asia
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: payment-svc
+            port: 
+              number: 80
+      - pathType: Prefix
+        path: "/api"
+        backend:
+          service:
+            name: myapp
+            port: 
+              number: 80
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: payment-svc
+  namespace: ingress
+spec:
+  type: ExternalName
+  externalName: payment-svc.payment.svc
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: myapp
+  namespace: ingress
+spec:
+  type: ExternalName
+  externalName: myapp.payment.svc
